@@ -16,7 +16,8 @@ public class ProductoService {
     }
 
     public Producto actualizarCantidad(String id, int cantidad) {
-        Producto producto = productoRepository.findById(id).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+        Producto producto = productoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
         if (producto.getCantidad() - cantidad < 0) {
             throw new RuntimeException("No se puede retirar más de la cantidad disponible");
         }
