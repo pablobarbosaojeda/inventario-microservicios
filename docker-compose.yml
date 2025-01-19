@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - inventario-net
+    volumes:
+      - mongo-data:/data/db
+
+  # Nodo 1: Agregar productos
+  nodo1:
+    build:
+      context: ./nodo1
+    container_name: nodo1
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongo
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/inventario
+    networks:
+      - inventario-net
+
+  # Nodo 2: Actualizar cantidad de productos
+  nodo2:
+    build:
+      context: ./nodo2
+    container_name: nodo2
+    ports:
+      - "8082:8082"
+    depends_on:
+      - mongo
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/inventario
+    networks:
+      - inventario-net
+
+  # Nodo 3: Consultar información de un producto
+  nodo3:
+    build:
+      context: ./nodo3
+    container_name: nodo3
+    ports:
+      - "8083:8083"
+    depends_on:
+      - mongo
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/inventario
+    networks:
+      - inventario-net
+
+  # Nodo 4: Consultar listado completo de productos
+  nodo4:
+    build:
+      context: ./nodo4
+    container_name: nodo4
+    ports:
+      - "8084:8084"
+    depends_on:
+      - mongo
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/inventario
+    networks:
+      - inventario-net
+
+# Volúmenes para persistencia de datos
+volumes:
+  mongo-data:
+
+# Redes
+networks:
+  inventario-net:
+    driver: bridge
